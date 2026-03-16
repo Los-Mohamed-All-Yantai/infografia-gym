@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Modelado Gimnasio - UAC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React y ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@0.321.0/dist/umd/lucide.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0;
+            background-color: #f1f5f9;
+        }
+        .uac-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .step-number {
+            background: #f97316;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const LucideIcon = ({ name, size = 20, color = "currentColor", className = "" }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (window.lucide && window.lucide.icons) {
+                    const icon = window.lucide.icons[name] || window.lucide.icons['HelpCircle'];
+                    if (icon && typeof icon.toSvg === 'function') {
+                        const svg = icon.toSvg({
+                            width: size,
+                            height: size,
+                            stroke: color,
+                            'stroke-width': 2,
+                            class: className
+                        });
+                        if (iconRef.current) iconRef.current.innerHTML = svg;
+                    }
+                }
+            }, [name, size, color, className]);
+            return <span ref={iconRef} className="inline-flex items-center justify-center"></span>;
+        };
+
+        const App = () => {
+            const [tab, setTab] = useState('entidades');
+
+            const integrantes = [
+                { name: "Aldhair Emerson Mamani Mamani", part: "100%" },
+                { name: "Gianfrando Maximiliano Quispe Pinto", part: "100%" },
+                { name: "Bastian Nefi Quipo Mamani", part: "100%" },
+                { name: "Frank Puma Ucharo", part: "100%" }
+            ];
+
+            const entidades = [
+                { id: "Cliente", icon: "Users", color: "text-blue-600", bg: "bg-blue-50", desc: "Persona que adquiere servicios del gimnasio.", attrs: ["IdCliente (PK)", "NombreCompleto", "DNI", "Telefono", "Email", "FechaNacimiento", "FechaRegistro"] },
+                { id: "Membresía", icon: "CreditCard", color: "text-emerald-600", bg: "bg-emerald-50", desc: "Planes contratados por el cliente.", attrs: ["IdMembresia (PK)", "Tipo (Mensual/Anual)", "Precio", "FechaInicio", "FechaFin", "Estado", "IdCliente (FK)"] },
+                { id: "Entrenador", icon: "UserCheck", color: "text-orange-600", bg: "bg-orange-50", desc: "Personal capacitado que dicta las sesiones.", attrs: ["IdEntrenador (PK)", "NombreCompleto", "Especialidad", "Turno", "Certificaciones", "Telefono"] },
+                { id: "Clase", icon: "Dumbbell", color: "text-purple-600", bg: "bg-purple-50", desc: "Actividades grupales programadas.", attrs: ["IdClase (PK)", "NombreClase", "Horario", "DiaSemana", "CapacidadMax", "UbicacionSala", "IdEntrenador (FK)"] },
+                { id: "Pago", icon: "DollarSign", color: "text-rose-600", bg: "bg-rose-50", desc: "Registro financiero de las transacciones.", attrs: ["IdPago (PK)", "Monto", "FechaPago", "MetodoPago", "NroRecibo", "EstadoTransaccion", "IdCliente (FK)"] },
+                { id: "Asistencia", icon: "ClipboardCheck", color: "text-indigo-600", bg: "bg-indigo-50", desc: "Control de acceso a las instalaciones.", attrs: ["IdAsistencia (PK)", "FechaHora", "TipoAcceso", "IdCliente (FK)"] }
+            ];
+
+            return (
+                <div className="max-w-7xl mx-auto p-4 md:p-8 animate-in fade-in duration-1000">
+                    {/* ENCABEZADO INSTITUCIONAL */}
+                    <header className="uac-gradient rounded-[2.5rem] p-8 md:p-14 text-white relative overflow-hidden mb-12 card-shadow">
+                        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+                        <div className="relative z-10">
+                            <div className="flex flex-col md:flex-row items-center gap-8 mb-10">
+                                <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center p-3 shadow-2xl border-4 border-white/20">
+                                    <div className="text-blue-900 font-black text-center leading-none">
+                                        <div className="text-xl">UAC</div>
+                                        <div className="text-[10px] opacity-60 font-bold mt-1 uppercase">Cusco</div>
+                                    </div>
+                                </div>
+                                <div className="text-center md:text-left">
+                                    <h1 className="text-3xl md:text-5xl font-black mb-3 tracking-tighter leading-tight uppercase">Universidad Andina del Cusco</h1>
+                                    <h2 className="text-blue-300 font-bold uppercase tracking-widest text-sm mb-1">Facultad de Ingeniería y Arquitectura</h2>
+                                    <p className="text-blue-400 font-semibold text-xs tracking-wider uppercase">Escuela Profesional de Ingeniería de Sistemas</p>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-8 items-end">
+                                <div className="glass rounded-3xl p-6 border-white/10">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <LucideIcon name="Shield" size={18} className="text-orange-400" />
+                                        <h3 className="text-orange-400 text-xs font-black uppercase tracking-widest">Equipo: Los Mohamad Ali Yantal</h3>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                                        {integrantes.map((member, i) => (
+                                            <div key={i} className="flex justify-between items-center text-[10px] font-medium border-b border-white/5 pb-1">
+                                                <span className="truncate mr-2">{member.name}</span>
+                                                <span className="bg-blue-500/30 px-1.5 py-0.5 rounded text-[8px]">{member.part}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col space-y-3">
+                                    <div className="bg-orange-500 inline-block px-6 py-2 rounded-2xl font-black text-sm shadow-xl text-center md:self-start">
+                                        TALLER 1.4: MODELADO CONCEPTUAL DE BASE DE DATOS
+                                    </div>
+                                    <div className="flex flex-wrap gap-4 text-xs text-blue-100 font-medium">
+                                        <span className="flex items-center gap-2"><LucideIcon name="User" size={14} /> Docente: Hugo Espetia Huamanga</span>
+                                        <span className="flex items-center gap-2"><LucideIcon name="Calendar" size={14} /> Año Académico: 2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="grid lg:grid-cols-12 gap-8">
+                        {/* COLUMNA LATERAL: METODOLOGÍA Y REGLAS */}
+                        <div className="lg:col-span-4 space-y-8">
+                            <section className="bg-white p-8 rounded-[2rem] card-shadow border border-slate-100">
+                                <h3 className="text-slate-800 font-black text-sm mb-6 uppercase tracking-widest flex items-center gap-2">
+                                    <LucideIcon name="Layout" color="#2563eb" size={18} /> Metodología de Diseño
+                                </h3>
+                                <div className="space-y-6">
+                                    {[
+                                        { t: "Análisis", d: "Identificación de necesidades del gimnasio." },
+                                        { t: "Abstracción", d: "Definición de entidades y sus atributos." },
+                                        { t: "Relacionamiento", d: "Establecimiento de vínculos lógicos." },
+                                        { t: "Normalización", d: "Eliminación de redundancia de datos." }
+                                    ].map((step, i) => (
+                                        <div key={i} className="flex gap-4">
+                                            <div className="step-number h-fit shrink-0 mt-1">{i+1}</div>
+                                            <div>
+                                                <h4 className="text-xs font-black text-slate-800 uppercase">{step.t}</h4>
+                                                <p className="text-[11px] text-slate-500">{step.d}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section className="bg-blue-900 p-8 rounded-[2rem] shadow-2xl text-white">
+                                <h3 className="text-orange-400 font-black text-sm mb-6 uppercase tracking-widest flex items-center gap-2">
+                                    <LucideIcon name="Gavel" size={18} /> Reglas de Negocio
+                                </h3>
+                                <div className="space-y-4">
+                                    {[
+                                        "Todo cliente debe estar asociado a una membresía vigente.",
+                                        "Un entrenador solo puede dictar clases de su especialidad.",
+                                        "El aforo de la clase no debe superar la capacidad máxima.",
+                                        "Los pagos deben registrarse antes del inicio del servicio."
+                                    ].map((rule, i) => (
+                                        <div key={i} className="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
+                                            <LucideIcon name="AlertCircle" size={14} className="text-blue-400 shrink-0 mt-0.5" />
+                                            <span className="text-[11px] text-blue-100 font-medium leading-tight">{rule}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section className="bg-white p-8 rounded-[2rem] card-shadow border border-slate-100">
+                                <h3 className="text-slate-800 font-black text-sm mb-4 uppercase tracking-widest flex items-center gap-2">
+                                    <LucideIcon name="Cpu" color="#2563eb" size={18} /> Arquitectura
+                                </h3>
+                                <div className="p-4 bg-slate-50 rounded-2xl text-center">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-[9px] font-bold">FRONTEND</div>
+                                        <LucideIcon name="ArrowRight" size={12} className="text-slate-300" />
+                                        <div className="px-3 py-1 bg-orange-100 text-orange-700 rounded text-[9px] font-bold">API</div>
+                                        <LucideIcon name="ArrowRight" size={12} className="text-slate-300" />
+                                        <div className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded text-[9px] font-bold">BD</div>
+                                    </div>
+                                    <p className="text-[10px] text-slate-400 font-medium">Flujo de datos sincronizado para gestión en tiempo real.</p>
+                                </div>
+                            </section>
+                        </div>
+
+                        {/* COLUMNA PRINCIPAL: ENTIDADES Y RELACIONES EXPANDIDAS */}
+                        <div className="lg:col-span-8 space-y-8">
+                            <div className="bg-white p-8 md:p-10 rounded-[2.5rem] card-shadow border border-slate-100">
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                                    <div>
+                                        <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                                            <LucideIcon name="Database" color="#2563eb" size={28} /> MODELO ENTIDAD-RELACIÓN
+                                        </h2>
+                                        <p className="text-slate-400 text-xs font-bold mt-1 uppercase tracking-tighter">Diseño conceptual del ecosistema de datos</p>
+                                    </div>
+                                    <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto">
+                                        <button 
+                                            onClick={() => setTab('entidades')}
+                                            className={`flex-1 md:flex-none px-8 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${tab === 'entidades' ? 'bg-white shadow-lg text-blue-700' : 'text-slate-400 hover:text-slate-600'}`}
+                                        >
+                                            ENTIDADES
+                                        </button>
+                                        <button 
+                                            onClick={() => setTab('relaciones')}
+                                            className={`flex-1 md:flex-none px-8 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${tab === 'relaciones' ? 'bg-white shadow-lg text-blue-700' : 'text-slate-400 hover:text-slate-600'}`}
+                                        >
+                                            RELACIONES
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {tab === 'entidades' ? (
+                                    <div className="grid sm:grid-cols-2 gap-6">
+                                        {entidades.map((e, i) => (
+                                            <div key={i} className={`${e.bg} p-6 rounded-[2rem] border border-transparent hover:border-blue-200 transition-all duration-300 group shadow-sm`}>
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className={`p-3 rounded-2xl bg-white shadow-md ${e.color} group-hover:rotate-12 transition-transform`}>
+                                                        <LucideIcon name={e.icon} size={22} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-black text-slate-800 uppercase tracking-wide text-xs">{e.id}</h4>
+                                                        <p className="text-[9px] text-slate-400 font-bold leading-none">{e.desc}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-1.5 border-t border-slate-200/50 pt-4">
+                                                    {e.attrs.map((a, j) => (
+                                                        <div key={j} className="flex items-center justify-between text-[10px] group/item">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-1 h-1 rounded-full ${a.includes('PK') ? 'bg-blue-600' : (a.includes('FK') ? 'bg-orange-500' : 'bg-slate-300')}`}></div>
+                                                                <span className={`${a.includes('PK') ? 'font-black text-blue-900' : (a.includes('FK') ? 'font-bold text-orange-700' : 'text-slate-500 font-medium')}`}>
+                                                                    {a.split(' ')[0]}
+                                                                </span>
+                                                            </div>
+                                                            <span className="text-[8px] opacity-0 group-hover/item:opacity-40 font-black text-slate-400 italic">
+                                                                {a.includes('PK') ? 'Llave Primaria' : (a.includes('FK') ? 'Llave Foránea' : 'Atributo')}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="space-y-6">
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div className="p-8 rounded-[2rem] bg-blue-600 text-white relative overflow-hidden shadow-xl shadow-blue-200">
+                                                <div className="absolute top-0 right-0 p-8 opacity-10"><LucideIcon name="GitMerge" size={80} /></div>
+                                                <h4 className="font-black text-lg mb-2 uppercase tracking-tighter italic">Relación Directa (1:N)</h4>
+                                                <p className="text-xs text-blue-50 opacity-90 leading-relaxed font-medium">Un Entrenador puede ser mentor de muchos Clientes. Un Cliente puede tener múltiples Pagos asociados a su historial.</p>
+                                            </div>
+                                            <div className="p-8 rounded-[2rem] bg-orange-600 text-white relative overflow-hidden shadow-xl shadow-orange-200">
+                                                <div className="absolute top-0 right-0 p-8 opacity-10"><LucideIcon name="Layers" size={80} /></div>
+                                                <h4 className="font-black text-lg mb-2 uppercase tracking-tighter italic">Relación Compuesta (M:N)</h4>
+                                                <p className="text-xs text-orange-50 opacity-90 leading-relaxed font-medium">Muchos Clientes pueden tomar diversas Clases. Se utiliza una tabla intermedia para registrar la asistencia puntual.</p>
+                                            </div>
+                                        </div>
+                                        <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-200 flex items-center gap-6">
+                                            <div className="bg-white p-4 rounded-full shadow-inner"><LucideIcon name="Link" color="#2563eb" /></div>
+                                            <p className="text-[11px] text-slate-500 font-medium italic">"La integridad referencial asegura que no existan pagos sin clientes asociados, manteniendo la base de datos libre de errores lógicos."</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* SECCIÓN DE CONSULTAS AVANZADAS */}
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="bg-white p-8 rounded-[2rem] card-shadow border border-slate-100">
+                                    <h3 className="text-slate-800 font-black text-xs mb-6 uppercase tracking-widest flex items-center gap-2">
+                                        <LucideIcon name="Zap" color="#f59e0b" size={16} /> Consultas de Valor
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {[
+                                            { q: "Lista de clientes con pagos pendientes.", c: "Control de Morosidad" },
+                                            { q: "Clases con más del 90% de aforo.", c: "Optimización de Espacios" },
+                                            { q: "Entrenadores con mayor índice de asistencia.", c: "Evaluación de Personal" },
+                                            { q: "Ingresos mensuales por tipo de membresía.", c: "Reporte Financiero" }
+                                        ].map((item, i) => (
+                                            <div key={i} className="p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-help group">
+                                                <div className="text-[10px] text-blue-600 font-black uppercase mb-1">{item.c}</div>
+                                                <p className="text-[11px] text-slate-600 font-medium">{item.q}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="bg-slate-900 p-8 rounded-[2rem] shadow-2xl text-white">
+                                    <h3 className="text-orange-400 font-black text-xs mb-6 uppercase tracking-widest flex items-center gap-2">
+                                        <LucideIcon name="BarChart3" size={16} /> Impacto del Proyecto
+                                    </h3>
+                                    <div className="space-y-6 mt-4">
+                                        <div className="flex justify-between items-end">
+                                            <div className="text-[10px] font-bold uppercase tracking-widest opacity-60">Eficiencia</div>
+                                            <div className="text-xl font-black text-blue-400">+85%</div>
+                                        </div>
+                                        <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                            <div className="bg-blue-400 h-full w-[85%]"></div>
+                                        </div>
+                                        <div className="flex justify-between items-end">
+                                            <div className="text-[10px] font-bold uppercase tracking-widest opacity-60">Orden de Datos</div>
+                                            <div className="text-xl font-black text-emerald-400">100%</div>
+                                        </div>
+                                        <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                            <div className="bg-emerald-400 h-full w-full"></div>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 font-medium leading-tight pt-4">La automatización del flujo de datos reduce el error humano y centraliza la administración operativa.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CONCLUSIÓN Y PIE DE PÁGINA */}
+                    <div className="mt-12 bg-white p-10 rounded-[3rem] card-shadow border border-slate-100 text-center relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-orange-500"></div>
+                        <h3 className="text-slate-800 font-black text-sm mb-6 uppercase tracking-[0.4em]">Conclusiones del Estudio</h3>
+                        <div className="grid md:grid-cols-3 gap-8 text-left">
+                            <div className="p-4 border-l-2 border-slate-100">
+                                <p className="text-[11px] text-slate-500 leading-relaxed"><strong>Escalabilidad:</strong> El modelo permite añadir nuevas entidades como 'Inventario' o 'Venta de Productos' sin afectar la estructura base.</p>
+                            </div>
+                            <div className="p-4 border-l-2 border-slate-100">
+                                <p className="text-[11px] text-slate-500 leading-relaxed"><strong>Integridad:</strong> El uso de llaves foráneas garantiza que no existan registros huérfanos, manteniendo la coherencia financiera.</p>
+                            </div>
+                            <div className="p-4 border-l-2 border-slate-100">
+                                <p className="text-[11px] text-slate-500 leading-relaxed"><strong>Decisión:</strong> Las consultas diseñadas transforman datos brutos en información estratégica para el crecimiento del gimnasio.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer className="mt-16 text-center text-[9px] font-black uppercase text-slate-400 tracking-[0.6em] pb-12 flex flex-col gap-2">
+                        <span>Universidad Andina del Cusco</span>
+                        <span className="opacity-50">Ingeniería de Sistemas • Taller de Modelado • 2026</span>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
